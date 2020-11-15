@@ -24,11 +24,13 @@ namespace BepAwkwardsModPack
         public bool firstUpgradeYN;
         public bool onOffFps;
         public string onOffFpsString;
+        public ShipLevel lvlBeforeEnable;
         public static PauseMenu pause;
 
         
             void Start()
             {
+              lvlBeforeEnable = go.GeneralGameState.UserInfo.GetShipLevel;
                 hasAdded = false;
             if (!File.Exists(Path.Combine(Application.dataPath, @"..\Mods\warning.json")))
             {
@@ -63,10 +65,15 @@ namespace BepAwkwardsModPack
             {
                 if (firstUpgradeYN)
                 {
-                    go.GeneralGameState.UserInfo.ShipLevel = ShipLevel.Level4;
+                    
                     firstUpgradeYN = false;
+                    go.GeneralGameState.UserInfo.ShipLevel = lvlBeforeEnable;
 
-                }
+            }
+            else
+            {
+                go.GeneralGameState.UserInfo.ShipLevel = lvlBeforeEnable;
+            }
             }
             void Update()
             {
@@ -101,7 +108,10 @@ namespace BepAwkwardsModPack
 
             menu = Resources.FindObjectsOfTypeAll<OptionsMenu2>().First<OptionsMenu2>();
 
-
+            if (!firstUpgradeYN)
+            {
+                go.GeneralGameState.UserInfo.ShipLevel = lvlBeforeEnable;
+            }
             if (!hasAdded)
             {
                 BepVecterModCore.VecterModCore.ModSettings.Add("- AwkwardsModPack");
@@ -121,12 +131,8 @@ namespace BepAwkwardsModPack
 
                 case "BackToFirstUpgrade":
 
-                    if (go.GeneralGameState.UserInfo.ShipLevel < ShipLevel.Level4 && !firstUpgradeYN)
-                    {
-                        menu.SelectedOption += "\nyou must be level 4 to use this mod.";
-                    }
-                    else
-                    {
+                
+                    
                         if (File.Exists(Application.dataPath + "../Mods/BackTo1stUpgradeMod.dll"))
                         {
                             menu.SelectedOption += "\nYou already have this mod by itself...\n\nsorry :)";
@@ -136,7 +142,7 @@ namespace BepAwkwardsModPack
                             menu.SelectedOption += "\nPuts you back to First Upgrade for a challenge >:)\n\n" + firstUpgradeYNString;
                         }
 
-                    }
+                    
                     if (Input.GetKeyDown(KeyCode.Return) && !enterDepressed)
                     {
                         switch (firstUpgradeYN)
