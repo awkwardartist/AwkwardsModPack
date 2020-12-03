@@ -26,11 +26,18 @@ namespace BepAwkwardsModPack
         public string onOffFpsString;
         public ShipLevel lvlBeforeEnable;
         public static PauseMenu pause;
+        public int numOfLoadedMods;
 
         
             void Start()
             {
-              lvlBeforeEnable = go.GeneralGameState.UserInfo.GetShipLevel;
+
+                if (Directory.GetFiles(Directory.GetCurrentDirectory().ToString()).Length > 1)
+                {
+                    numOfLoadedMods = Directory.GetFiles(Directory.GetCurrentDirectory()).Length - 1;
+                    
+                } 
+                lvlBeforeEnable = go.GeneralGameState.UserInfo.GetShipLevel;
                 hasAdded = false;
             if (!File.Exists(Path.Combine(Application.dataPath, @"..\Mods\warning.json")))
             {
